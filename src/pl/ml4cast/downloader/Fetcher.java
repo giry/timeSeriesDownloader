@@ -8,5 +8,7 @@ public abstract class Fetcher {
 		this.params = fetcherParams;
 	}
 
-	public abstract void fetch();
+	public abstract void fetch(String seriesName, OutputTarget target);
+
+	public abstract String getName();
 }
