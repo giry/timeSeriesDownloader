@@ -1,17 +1,17 @@
 package pl.ml4cast.downloader;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.reflections.Reflections;
 
 import pl.ml4cast.downloader.fetchers.YahooFetcher;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class Main {
 	private static final String PREFIX = YahooFetcher.class.getPackage()
@@ -27,23 +27,12 @@ public class Main {
 					.println("Wrong arguments: start date is after end date.");
 			return;
 		}
+
 		// ExecutorService executor = Executors.newFixedThreadPool(4);
 		FetcherParams params = new FetcherParams(cmdLineOpts);
-		findFetchers(params);
-		OutputTarget target = new OutputTarget() {
+		Injector injector = Guice.createInjector(new MainModule(params));
+		findFetchers(injector);
 
-			@Override
-			public void close() {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void add(DateTime time, String name, double value) {
-				System.out.println(name + " " + value);
-
-			}
-		};
 		String[] series = cmdLineOpts.getSeriesNames();
 		for (String name : series) {
 			int idx = name.indexOf(':');
@@ -51,12 +40,12 @@ public class Main {
 			String serie = name.substring(idx + 1);
 			Fetcher fetcher = fetchers.get(prefix);
 			if (fetcher != null) {
-				fetcher.fetch(serie, target);
+				fetcher.fetch(serie);
 			}
 		}
 	}
 
-	private static void findFetchers(FetcherParams params) {
+	private static void findFetchers(Injector injector) {
 		Reflections ref = new Reflections(PREFIX);
 		Set<Class<? extends Fetcher>> fetcherClasses = ref
 				.getSubTypesOf(Fetcher.class);
@@ -64,16 +53,10 @@ public class Main {
 		while (it.hasNext()) {
 			Class<? extends Fetcher> clazz = it.next();
 			try {
-				Constructor<? extends Fetcher> ctor = clazz
-						.getConstructor(FetcherParams.class);
-				if (ctor != null) {
-					Fetcher fetcher = ctor.newInstance(params);
-					fetchers.put(fetcher.getName(), fetcher);
-				}
-			} catch (NoSuchMethodException | SecurityException
-					| InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace(); // TODO co zrobic z wyjatkiem?
+				Fetcher fetcher = injector.getInstance(clazz);
+				fetchers.put(fetcher.getName(), fetcher);
+			} catch (SecurityException | IllegalArgumentException e) {
+				e.printStackTrace();
 			}
 		}
 	}

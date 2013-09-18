@@ -34,6 +34,10 @@
   		<groupId>org.mockito</groupId>
   		<artifactId>mockito-all</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>com.google.inject</groupId>
+  		<artifactId>guice</artifactId>
+  	</dependency>
   </dependencies>
   <dependencyManagement>
   	<dependencies>
@@ -56,6 +60,11 @@
   			<groupId>org.mockito</groupId>
   			<artifactId>mockito-all</artifactId>
   			<version>1.9.5</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>com.google.inject</groupId>
+  			<artifactId>guice</artifactId>
+  			<version>3.0</version>
   		</dependency>
   	</dependencies>
   </dependencyManagement>
