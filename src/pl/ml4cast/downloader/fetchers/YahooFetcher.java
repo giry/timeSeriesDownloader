@@ -16,7 +16,8 @@ import com.google.inject.Inject;
 
 public class YahooFetcher extends Fetcher {
 
-	private static final String Y = "y";
+	private static final String DATE_PATTERN = "yyyy-MM-dd";
+	private static final String PREFIX = "y";
 	private static final String CSV_URL = "http://ichart.yahoo.com/table.csv?s=%s&a=%d&b=%d&c=%d&d=%d&e=%d&f=%d&g=%s&ignore=.csv";
 	private static final String PERIOD = "d";
 	private final OutputTarget target;
@@ -61,7 +62,7 @@ public class YahooFetcher extends Fetcher {
 			while ((line = reader.readLine()) != null) {
 				String[] arr = line.split(",");
 				DateTime time = DateTime.parse(arr[0],
-						DateTimeFormat.forPattern("yyyy-MM-dd"));
+						DateTimeFormat.forPattern(DATE_PATTERN));
 				if (time.isAfter(params.getEndTime())) {
 					continue;
 				}
@@ -84,7 +85,7 @@ public class YahooFetcher extends Fetcher {
 
 	@Override
 	public String getName() {
-		return Y;
+		return PREFIX;
 	}
 
 }
