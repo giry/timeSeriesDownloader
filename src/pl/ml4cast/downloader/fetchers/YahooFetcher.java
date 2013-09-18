@@ -44,13 +44,16 @@ public class YahooFetcher extends Fetcher {
 				endTime.getDayOfMonth(), endTime.getYear(), PERIOD);
 
 		BufferedReader reader = urlReader.read(strUrl);
-		parse(target, seriesName, reader);
+		if (reader != null) {
+			parse(target, seriesName, reader);
+		}
 
 		target.close();
 	}
 
 	private void parse(OutputTarget target, String name, BufferedReader reader) {
-		String dbName = getName() + name;
+		String dbNamePrice = getName() + name + "_price";
+		String dbNameVolume = getName() + name + "_volume";
 		String line;
 		try {
 			reader.readLine();// omit header
@@ -66,11 +69,11 @@ public class YahooFetcher extends Fetcher {
 					break;
 				if (params.hasColumn(ColumnTypes.PRICE)) {
 					float adjClose = Float.parseFloat(arr[6]);
-					target.add(time, dbName, adjClose);
+					target.add(time, dbNamePrice, adjClose);
 				}
 				if (params.hasColumn(ColumnTypes.VOLUME)) {
 					float volume = Float.parseFloat(arr[5]);
-					target.add(time, dbName, volume);
+					target.add(time, dbNameVolume, volume);
 				}
 
 			}

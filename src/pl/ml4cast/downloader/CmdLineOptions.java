@@ -13,6 +13,16 @@ public class CmdLineOptions {
 	private DateTime endDate;
 	@Option(name = "-t", usage = "list of column types [price|volume]+", handler = StringArrayOptionHandler.class)
 	private String[] columnTypes;
+	@Option(name = "-dbh", usage = "database host")
+	private String dbHost = "localhost";
+	@Option(name = "-dbn", usage = "database name")
+	private String dbName = "stocks";
+	@Option(name = "-dbu", usage = "database user")
+	private String dbUser = "root";
+	@Option(name = "-dbP", usage = "database port")
+	private Integer dbPort = 3306;
+	@Option(name = "-dbp", usage = "database password")
+	private String dbPassword = "";
 
 	public String[] getSeriesNames() {
 		return seriesNames;
@@ -30,4 +40,23 @@ public class CmdLineOptions {
 		return columnTypes;
 	}
 
+	public String getDbHost() {
+		return dbHost;
+	}
+
+	public String getDbName() {
+		return dbName;
+	}
+
+	public String getDbPassword() {
+		return dbPassword;
+	}
+
+	public Integer getDbPort() {
+		return dbPort;
+	}
+
+	public String getDbUser() {
+		return dbUser;
+	}
 }

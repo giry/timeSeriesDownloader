@@ -14,6 +14,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 public class Main {
+	private static final char SEPARATOR = ':';
 	private static final String PREFIX = YahooFetcher.class.getPackage()
 			.getName();
 	private static HashMap<String, Fetcher> fetchers = new HashMap<>();
@@ -35,7 +36,7 @@ public class Main {
 
 		String[] series = cmdLineOpts.getSeriesNames();
 		for (String name : series) {
-			int idx = name.indexOf(':');
+			int idx = name.indexOf(SEPARATOR);
 			String prefix = name.substring(0, idx);
 			String serie = name.substring(idx + 1);
 			Fetcher fetcher = fetchers.get(prefix);
